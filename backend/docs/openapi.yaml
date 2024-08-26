@@ -1,0 +1,309 @@
+openapi: 3.1.0
+info:
+  title: API de Gestão de Cursos
+  version: 1.0.0
+  description: API para gestão de cursos e usuários.
+
+servers:
+  - url: http://localhost:5000
+    description: Servidor local de desenvolvimento
+
+paths:
+  /courses:
+    get:
+      summary: Lista todos os cursos
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+    post:
+      summary: Cria um novo curso
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      requestBody:
+        description: Dados do novo curso
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCourse'
+      responses:
+        '201':
+          description: Curso criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponse'
+
+  /courses/{course_id}/status:
+    patch:
+      summary: Atualiza o status de um curso
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: string
+          description: ID do curso
+      responses:
+        '200':
+          description: Status atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+
+  /courses/{user_id}:
+    get:
+      summary: Lista cursos de um usuário específico
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+          description: ID do usuário
+      responses:
+        '200':
+          description: Lista de cursos do usuário
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+
+  /courses/{course_id}/modules:
+    post:
+      summary: Adiciona um novo módulo a um curso
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: string
+          description: ID do curso
+      requestBody:
+        description: Dados do novo módulo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewModule'
+      responses:
+        '201':
+          description: Módulo criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleResponse'
+    get:
+      summary: Lista todos os módulos de um curso
+      security:
+        - bearerAuth: []
+      tags:
+        - Courses
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: string
+          description: ID do curso
+      responses:
+        '200':
+          description: Lista de módulos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Module'
+
+  /users:
+    get:
+      summary: Lista todos os usuários
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Cria um novo usuário
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        description: Dados do novo usuário
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /sessions:
+    post:
+      summary: Autentica um usuário e gera um token
+      tags:
+        - Users
+      requestBody:
+        description: Credenciais do usuário
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Autenticado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+    NewCourse:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    CourseResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        courseId:
+          type: string
+
+    StatusResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        newStatus:
+          type: string
+
+    Module:
+      type: object
+      properties:
+        id:
+          type: string
+        courseId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+    NewModule:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    ModuleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    UserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
