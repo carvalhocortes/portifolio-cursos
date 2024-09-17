@@ -1,16 +1,12 @@
--- profiles table
-CREATE TABLE profiles_users (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
-);
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- users table
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  profile_id INT REFERENCES profiles_users(id),
+  profile VARCHAR(50) NOT NULL CHECK (profile IN ('admin', 'writer')),
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
@@ -38,7 +34,7 @@ CREATE TABLE courses_modules (
 );
 
 -- videos table
-CREATE TABLE modules_videos (
+CREATE TABLE modules_classes (
   id SERIAL PRIMARY KEY,
   module_id INT REFERENCES courses_modules(id),
   name VARCHAR(255) NOT NULL,
@@ -56,12 +52,7 @@ CREATE TABLE users_courses (
   course_id INT REFERENCES courses(id)
 );
 
--- insert initial profiles
-INSERT INTO profiles_users (name) VALUES 
-('admin'),
-('writer');
-
 -- insert initial admin user
-INSERT INTO users (name, email, password, profile_id) VALUES 
-('Administrador', 'admin@supercourses.com', '7877e7d2da6fe021f557980d0396919b16cd2ea8564ab12fc18a1795f7b8bc12e02acf4ab8733a00513cb9ecf6e0329656f3fd6ee3859d355a0113f75daeec81', 1),
-('Writer', 'writer@supercourses.com', '7877e7d2da6fe021f557980d0396919b16cd2ea8564ab12fc18a1795f7b8bc12e02acf4ab8733a00513cb9ecf6e0329656f3fd6ee3859d355a0113f75daeec81', 2);
+INSERT INTO users (id, name, email, password, profile) VALUES
+('cee72187-d835-432e-8326-6c7772444c4d', 'Administrador', 'admin@supercourses.com', '123456','admin'),
+('17c2859a-8437-4ef4-8949-36caf45bd04f', 'Writer', 'writer@supercourses.com', '123456', 'writer');
