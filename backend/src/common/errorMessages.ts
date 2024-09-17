@@ -1,25 +1,35 @@
+import { Error } from '../types/commonTypes'
+
 const errorMessages = {
-  unauthorizedAccess:() => ({
+  validationError: (errorsMessages: string[]): Error => ({
+    httpCode: 400,
+    msg: errorsMessages
+  }),
+  invalidPermission: (): Error => ({
+    httpCode: 401,
+    msg: 'Permissão inválida'
+  }),
+  unauthorizedAccess:(): Error => ({
     httpCode: 401,
     msg: 'É preciso fazer o login para acessar este recurso.'
   }),
-  forbiddenAccess:() => ({
+  forbiddenAccess:(): Error => ({
     httpCode: 403,
     msg: 'Você não tem permissão para acessar este recurso.'
   }),
-  invalidPassword:() => ({
+  invalidPassword:(): Error => ({
     httpCode: 401,
     msg: 'Usuário ou senha inválidos'
   }),
-  invalidPayload:() => ({
+  invalidPayload:(): Error => ({
     httpCode: 400,
     msg: 'Por favor envie todos os campos obrigatórios'
   }),
-  alreadyExists: (field: string) => ({
+  alreadyExists: (field: string): Error => ({
     httpCode: 400,
     msg: `Este ${field} já está cadastrado`
   }),
-  notRegistered: (subject: string) => ({
+  notRegistered: (subject: string): Error => ({
     httpCode: 400,
     msg: `O ${subject} não existe`
   })

@@ -1,33 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, CreateDateColumn } from 'typeorm'
-import ProfilesUsersEntity from './ProfilesUsersEntity'
-import UsersCoursesEntity from './UsersCoursesEntity'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import EnumProfiles from '../enums/EnumProfiles';
 
 @Entity('users')
-export default class UserEntity {
-  @PrimaryGeneratedColumn()
-  id!: number
-  @Column({ length: 255 })
-  name: string
-  @Column({ length: 255, unique: true })
-  email: string
-  @Column({ length: 255 })
-  password: string
-  @ManyToOne(() => ProfilesUsersEntity)
-  @JoinColumn({ name: 'profile_id' })
-  profile: ProfilesUsersEntity
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at!: Date
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at!: Date
-  @OneToMany(() => UsersCoursesEntity, usersCourses => usersCourses.user)
-  usersCourses!: UsersCoursesEntity[]
-  // @OneToMany(() => CourseModulesEntity, (userCourseModules) => userCourseModules.user)
-  // userCourseModules!: CourseModulesEntity[];
+export default class Users {
 
-  constructor(name: string, email: string, password: string, profile: ProfilesUsersEntity) {
-    this.name = name
-    this.email = email
-    this.password = password
-    this.profile = profile
-  }
+
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
+  name: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column({
+    type: 'enum',
+    enum: EnumProfiles,
+    default: EnumProfiles.writer,
+  })
+  profile: EnumProfiles;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
+
 }

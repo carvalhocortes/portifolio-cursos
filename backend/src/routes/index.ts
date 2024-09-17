@@ -1,12 +1,10 @@
-import express from "express";
-import coursesRouter from "../routes/coursesRouter";
-import usersRouter from "../routes/usersRouter";
-import sessionsRouter from "../routes/sessionsRouter";
+import * as express from 'express';
+import usersRouter from './UsersRouter';
+import loginRouter from './LoginRouter';
 
 const router = (app: express.Router) => {
-  app.use("/courses", coursesRouter);
-  app.use("/users", usersRouter);
-  app.use("/sessions", sessionsRouter);
+  app.use('/users', usersRouter);
+  app.use('/login', loginRouter);
 };
 
 export default router;

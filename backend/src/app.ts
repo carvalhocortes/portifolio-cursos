@@ -1,8 +1,8 @@
-import express from "express";
-import router from "./routes";
-import "reflect-metadata";
-import cors from "cors";
-import AppDataSource from "./config/dataSource";
+import express from 'express';
+import router from './routes';
+import 'reflect-metadata';
+import cors from 'cors';
+import AppDataSource from './config/dataSource';
 
 const app = express();
 
@@ -19,7 +19,7 @@ router(app);
 
 AppDataSource.initialize()
   .then(async () => {
-    console.log("Banco de dados conectado");
+    console.log('Banco de dados conectado');
   })
   .catch((erro) => { console.log(erro); });
 

@@ -1,36 +1,40 @@
-import { Request, Response } from "express";
-import UsersRepository from "../repositories/UsersRepository";
+import { Request } from 'express';
+import UsersService from '../services/UsersService';
 
-export default class UsersController {
-  constructor(private repository: UsersRepository) {}
+export default class UserController {
+  private usersService: UsersService;
 
-  private async handleResponse(promise: Promise<any>, res: Response, successStatus = 200) {
-    return promise
-      .then(data => res.status(successStatus).json(data))
-      .catch((error: any) => {
-        const statusCode = error.httpCode || 500;
-        const message = error.msg || 'Internal Server Error';
-        return res.status(statusCode).json({ message });
-      });
+  constructor(usersService: UsersService) {
+    this.usersService = usersService;
   }
 
-  async handleLogin(req: Request, res: Response) {
-    const { email, password } = req.body;
-    const loginPromise = this.repository.handleLogin(email, password)
-      .then(token => ({ token }));
-    return this.handleResponse(loginPromise, res);
+  findById = (req: Request) => {
+    const { id } = req.params
+    return this.usersService.findById(id)
   }
 
-  async listAllUsers(req: Request, res: Response) {
-    const usersPromise = this.repository.listAllUsers();
-    return this.handleResponse(usersPromise, res);
+  findAll = async () => {
+    return this.usersService.findAll();
   }
 
-  async newUser(req: Request, res: Response) {
-    const newUserPromise = this.repository.newUser(req.body)
-      .then(() => ({
-        message: 'Novo usuário criado com sucesso, a senha foi enviada para o e-mail cadastrado.',
-      }));
-    return this.handleResponse(newUserPromise, res, 201);
+  create = (req: Request) => {
+    const { name, email } = req.body
+    return this.usersService.create({ name, email })
+  }
+
+  update = (req: Request) => {
+    const { id } = req.params
+    const { name, email, password } = req.body
+    return this.usersService.update(id, { name, email, password })
+  }
+
+  delete = (req: Request) => {
+    const { id } = req.params
+    return this.usersService.delete(id)
+  }
+
+  login = (req: Request) => {
+    const { email, password } = req.body
+    return this.usersService.login(email, password)
   }
 }

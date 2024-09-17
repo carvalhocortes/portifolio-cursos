@@ -1,11 +1,15 @@
 import { DataSource } from 'typeorm';
-import path from "path";
+import * as path from 'path';
 
-const entitiesPath = path.join(__dirname, "../entities");
+const entitiesPath = path.join(__dirname, '../entities');
 
 const AppDataSource = new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL,
+  host: 'localhost',
+  port: 5432,
+  username: 'user',
+  password: 'password',
+  database: 'super-cursos',
   entities: [`${entitiesPath}/*`]
 });
 
